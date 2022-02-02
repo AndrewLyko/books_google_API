@@ -9,7 +9,7 @@ services:
       python manage.py migrate &&
       python manage.py runserver 0.0.0.0:8000"
     volumes:
-      - .:/code/
+      - .:/usr/src/app/
       - static_volume:/code/staticfiles
     networks:
       - books_google_api_network
