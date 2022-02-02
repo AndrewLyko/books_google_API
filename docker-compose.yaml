@@ -1,0 +1,39 @@
+version: '3.8'
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: "Dockerfile"
+    command: sh -c "
+      python manage.py makemigrations &&
+      python manage.py migrate &&
+      python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/code/
+      - static_volume:/code/staticfiles
+    networks:
+      - books_google_api_network
+    ports:
+      - 8000:8000
+    depends_on:
+      - db
+    restart: "on-failure"
+    env_file:
+      - ./envs/.env
+
+  db:
+    image: library/postgres:13
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    networks:
+      - books_google_api_network
+    env_file:
+      - ./envs/.env.db
+
+volumes:
+  postgres_data:
+  static_volume:
+
+networks:
+  books_google_api_network:
+    driver: bridge
